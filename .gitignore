@@ -1,0 +1,5 @@
+backend/node_modules
+diary/node_modules
+backend/run
+backend/logs
+.DS_Store

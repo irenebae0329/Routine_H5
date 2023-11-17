@@ -1,0 +1,14 @@
+@import '../../common.scss';
+@media screen {
+    
+}
+.month-cell-list,.date-cell-list{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.calendar-container{
+    width: pxtovw(825);
+    margin: 0 auto;
+    
+}

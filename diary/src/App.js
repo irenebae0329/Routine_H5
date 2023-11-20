@@ -19,25 +19,28 @@ function App() {
   });
   const [open, setOpen] = useState(false);
   useLayoutEffect(() => {
-    const { 
-      calendarPanelInfo 
+    const {
+      calendarPanelInfo
     } = globalState;
-    if ( !calendarPanelInfo.source ){
+    if (!calendarPanelInfo.source) {
       setOpen(false);
-    }else if( (calendarPanelInfo.mode == 'month' && calendarPanelInfo.source!='date') || (calendarPanelInfo.mode == 'year' && calendarPanelInfo.source!='month')){
+    } else if ((calendarPanelInfo.mode == 'month' && calendarPanelInfo.source != 'date') || (calendarPanelInfo.mode == 'year' && calendarPanelInfo.source != 'month')) {
       setOpen(false);
-    }else{
+    } else {
       setOpen(true);
-    }  }, [globalState.calendarPanelInfo.year,globalState.calendarPanelInfo.monthIndex]);
+    }
+  }, [globalState.calendarPanelInfo.year, globalState.calendarPanelInfo.monthIndex]);
   useEffect(() => {
     const {
       year,
       dateIndex,
-      monthIndex
+      monthIndex,
+      source,
+      mode
     } = globalState.calendarPanelInfo;
-    getListDataApi({
+    !(source == 'month' && mode == 'year') && getListDataApi({
       year: year,
-      month: monthIndex+1 ,
+      month: monthIndex + 1,
       date: dateIndex
     }).then((({ dateList, monthList }) => {
       dispatch({
@@ -65,7 +68,7 @@ function App() {
           </Content>
           <Footer className="footer">我是页脚</Footer>
         </Layout>
-        <Drawer key={`${globalState.calendarPanelInfo.mode}_${globalState.calendarPanelInfo.year}_${globalState.calendarPanelInfo.monthIndex}_${globalState.calendarPanelInfo.dateIndex}`}></Drawer>
+        <Drawer key={`${JSON.stringify(globalState)}`}></Drawer>
       </drawerContext.Provider>
     </globalContext.Provider>);
 }

@@ -28,7 +28,7 @@ export async function getListDataApi(params) {
                     }) 
                 }),
                 monthList:monthList.map((recordList)=>{
-                    return recordList.map((value)=>{
+                    return recordList && recordList.map((value)=>{
                         return {
                             value:value,
                             editing:false,
@@ -38,7 +38,7 @@ export async function getListDataApi(params) {
             }
         }
         catch (err) {
-            message.error('网络错误,加载失败');
+            message.error('请求失败');
             return {
                 dateList:[],
                 monthList:[]

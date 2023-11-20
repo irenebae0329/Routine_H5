@@ -6,7 +6,6 @@ function getDaysOfMonth(year, month) {
 }
 class CalendarService extends Service {
     async updateRecordsTransaction(table, time, recordList) {
-        console.log(recordList);
         return await this.app.mysql.beginTransactionScope(async (conn) => {
             await conn.delete(table, {
                 time: time,
@@ -44,7 +43,7 @@ class CalendarService extends Service {
                 },
                 columns: ['content','status']
             });
-            res.push(queryRes.map(obj => obj.content));
+            res.push(queryRes);
         }
         return res;
     }

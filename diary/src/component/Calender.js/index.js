@@ -30,7 +30,6 @@ export function Calendar() {
         monthList,
         calendarPanelInfo: {
             monthIndex,
-            year,
             mode,
         }
     } = globalState;
@@ -46,8 +45,11 @@ export function Calendar() {
     }
 
     const cellRender = (curDay) => {
-        if( (monthIndex !== curDay.month() && mode == 'month') ){
+        if ((monthIndex !== curDay.month() && mode == 'month')) {
             return null;
+        }
+        const listSortFunction = (a, b) => {
+            return (Number(a.value.status) - Number(b.value.status));
         }
         const renderMonthCell = (curMonth) => {
             const currMonthList = monthList[curMonth];
@@ -56,11 +58,8 @@ export function Calendar() {
             }
             return (
                 <ul className='date-cell-list'>
-                    {currMonthList.map((obj, index) => {
-                        return (
-                            <li key={index}>
-                                {<Badge status='success' text={obj?.value} key={index}></Badge>}
-                            </li>)
+                    {currMonthList.sort(listSortFunction).map((obj, index) => {
+                        return  <CalendarCellListItem obj={obj} month_or_date_Index={curMonth} recordIndex={index} mode="year"></CalendarCellListItem>
                     })}
                 </ul>
             )
@@ -73,7 +72,7 @@ export function Calendar() {
 
             return (
                 <ul className='month-cell-list'>
-                    {currDateList.map((obj, index) => {
+                    {currDateList.sort(listSortFunction).map((obj, index) => {
                         return (
                             <CalendarCellListItem obj={obj} month_or_date_Index={curDate} recordIndex={index} mode="month"></CalendarCellListItem>
                         )
@@ -89,9 +88,10 @@ export function Calendar() {
                 return renderDateCell(curDay.date());
         }
     }
+
     return (
         <div className='calendar-container'>
-            <ACalender onSelect={handleSelect} cellRender={cellRender} className='calendar' onPanelChange={(thisdate, mode) => {
+            <ACalender onSelect={handleSelect} cellRender={cellRender} className='calendar' onPanelChange={(_, mode) => {
                 dispatch({
                     type: 'modify_info_source',
                     mode: mode
@@ -117,24 +117,29 @@ function CalendarCellListItem({ obj, month_or_date_Index, recordIndex, mode, key
         },
         dispatch
     } = useContext(globalContext);
+
     const handleChangeTaskStatus = (value) => {
-            dispatch({
-                type: `${mode == 'month' ? 'modify_date_records' : 'modify_month_records'}`,
-                dateIndex: month_or_date_Index,
-                value: dateList[month_or_date_Index].map((obj, index) => {
-                    if (index == recordIndex) {
-                        return {
-                            editing: obj.editing,
-                            value: {
-                                content: obj.value.content,
-                                status: value
-                            }
+
+        const listToModify = (mode == 'month' ? dateList : monthList);
+        
+        const indexType = mode == 'month' ? 'dateIndex' : 'monthIndex';
+        dispatch({
+            type: `${mode == 'month' ? 'modify_date_records' : 'modify_month_records'}`,
+            [indexType]: month_or_date_Index,
+            value: listToModify[month_or_date_Index].map((obj, index) => {
+                if (index == recordIndex) {
+                    return {
+                        editing: obj.editing,
+                        value: {
+                            content: obj.value.content,
+                            status: value
                         }
-                    } else {
-                        return obj
                     }
-                })
-            });
+                } else {
+                    return obj
+                }
+            })
+        });
     };
     return (
         <Popover content={
@@ -142,14 +147,15 @@ function CalendarCellListItem({ obj, month_or_date_Index, recordIndex, mode, key
                 defaultValue={status}
                 options={selectOptions}
                 onSelect={handleChangeTaskStatus}
-                onClick={(evt)=>{
+                onClick={(evt) => {
                     evt.preventDefault();
                     evt.stopPropagation();
                 }}
+                key={key}
             ></Select>
         }
             title="确认完成">
-            <li key={key} className='todo-record-item'>
+            <li className='todo-record-item'>
                 {<Badge status={status == TASK_STATUS.REQUIRED ? 'success' : 'warning'} text={content} key={key}></Badge>}
             </li>
         </Popover>

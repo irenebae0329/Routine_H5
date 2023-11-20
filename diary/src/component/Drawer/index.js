@@ -25,12 +25,12 @@ export function Drawer() {
         }
     } = globalState;
     const [cellTodo, setcellTodo] = useState((mode === 'month' ? dateList[dateIndex] : monthList[monthIndex]) || []);
-
     return (
         <>
             <ADrawer title={renderTitle()} open={show} onClose={() => {
                 setShow(false);
                 const originalList = mode === 'month' ? dateList[dateIndex] : monthList[monthIndex];
+                console.log(originalList,cellTodo);
                 if (JSON.stringify(originalList) === JSON.stringify(cellTodo)) {
                     return;
                 }
@@ -78,10 +78,10 @@ export function Drawer() {
             setcellTodo([
                 ...cellTodo,
                 {
-                    value:{
-                        content:'',
-                        status:TASK_STATUS.REQUIRED
-                    } ,
+                    value: {
+                        content: '',
+                        status: TASK_STATUS.REQUIRED
+                    },
                     editing: true
                 }
             ])

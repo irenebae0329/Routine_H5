@@ -7,8 +7,11 @@
     margin: 0;
     padding: 0;
 }
+.todo-record-item:hover{
+    cursor:pointer;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
 .calendar-container{
     width: pxtovw(825);
     margin: 0 auto;
-    
 }

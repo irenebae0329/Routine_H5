@@ -37,7 +37,6 @@ class CalendarController extends Controller {
             year,
             month,
         } = ctx.request.body;
-        console.log(year,month);
         const dateList = await ctx.service.calendar.getDateList(year, month);
         const monthList = await ctx.service.calendar.getMonthList(year);
         ctx.body = {

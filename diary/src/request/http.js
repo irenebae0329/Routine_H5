@@ -1,6 +1,6 @@
 
 export async function doRequest(route, params, timout = 5000) {
-    const baseUrl = 'http://127.0.0.1:7003'
+    const baseUrl = 'http://127.0.0.1:7001'
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const res = await Promise.race([fetch(`${baseUrl}${route}`, {

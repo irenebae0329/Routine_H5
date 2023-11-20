@@ -22,7 +22,6 @@ function App() {
     const { 
       calendarPanelInfo 
     } = globalState;
-   console.log(calendarPanelInfo); 
     if ( !calendarPanelInfo.source ){
       setOpen(false);
     }else if( (calendarPanelInfo.mode == 'month' && calendarPanelInfo.source!='date') || (calendarPanelInfo.mode == 'year' && calendarPanelInfo.source!='month')){

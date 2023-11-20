@@ -3,6 +3,7 @@ import { Drawer as ADrawer, Empty, Button, List, Input, message } from "antd";
 import { drawerContext } from "../../ctx/drawerContext";
 import { globalContext } from "../../ctx/globalContext";
 import { updateRecords } from "../../api/serivce";
+import { TASK_STATUS } from "../Calender.js";
 import './index.scss'
 export function Drawer() {
     const {
@@ -24,6 +25,7 @@ export function Drawer() {
         }
     } = globalState;
     const [cellTodo, setcellTodo] = useState((mode === 'month' ? dateList[dateIndex] : monthList[monthIndex]) || []);
+
     return (
         <>
             <ADrawer title={renderTitle()} open={show} onClose={() => {
@@ -38,7 +40,7 @@ export function Drawer() {
                     time: {
                         year,
                         month: monthIndex + 1,
-                        date: dateIndex 
+                        date: dateIndex
                     },
                     recordList: [...cellTodo.map((obj) => obj.value)]
                 }).then(({
@@ -60,7 +62,7 @@ export function Drawer() {
                                 value: [...cellTodo.filter((value) => value != '')]
                             })
                         }
-                    }else{
+                    } else {
                         message.error(toast)
                     }
                 })
@@ -76,14 +78,17 @@ export function Drawer() {
             setcellTodo([
                 ...cellTodo,
                 {
-                    value: '',
+                    value:{
+                        content:'',
+                        status:TASK_STATUS.REQUIRED
+                    } ,
                     editing: true
                 }
             ])
         }
         return (
             <div className="title">
-                { mode == 'month' ? '今日待办' : '本月待办'}
+                {mode == 'month' ? '今日待办' : '本月待办'}
                 <Button className="header-button" type="primary" onClick={handleOnClick}>添加待办项目</Button>
             </div>
         )
@@ -95,8 +100,13 @@ export function Drawer() {
 
         const ListItem = ({ value, index, setcellTodo, cellTodo }) => {
             const {
-                editing, value: defaultValue
+                editing,
+                value: {
+                    content: defaultValue,
+                    status
+                }
             } = value;
+
             const [inputValue, setInputValue] = useState(defaultValue);
 
             const handleDelete = () => {
@@ -112,7 +122,10 @@ export function Drawer() {
                     setcellTodo(cellTodo.map((value, curIdx) => {
                         if (curIdx === index) {
                             return {
-                                value: inputValue,
+                                value: {
+                                    content: inputValue,
+                                    status
+                                },
                                 editing: false
                             };
                         }
@@ -144,7 +157,6 @@ export function Drawer() {
                 {
                     cellTodo.map((value, index) => {
                         return <ListItem value={value} key={index} index={index} setcellTodo={setcellTodo} cellTodo={cellTodo}></ListItem>
-
                     })}
             </List>
         )

@@ -27,7 +27,6 @@ export function globalReducer(state, action) {
               dateList: newdateList
           };
       case 'modify_month_records':
-          console.log(newMonthList, value);
           newMonthList[monthIndex] = value;
           return {
               ...state,

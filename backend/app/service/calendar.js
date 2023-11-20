@@ -6,15 +6,17 @@ function getDaysOfMonth(year, month) {
 }
 class CalendarService extends Service {
     async updateRecordsTransaction(table, time, recordList) {
+        console.log(recordList);
         return await this.app.mysql.beginTransactionScope(async (conn) => {
             await conn.delete(table, {
                 time: time,
             });
-            recordList.forEach(async (record, index) => {
+            recordList.forEach(async ({ content ,status }, index) => {
                 await conn.insert(table, {
                     key: `${time}-${index}`,
-                    content: record,
-                    time: time
+                    content,
+                    time: time,
+                    status
                 })
             })
         })
@@ -27,11 +29,11 @@ class CalendarService extends Service {
                 where: {
                     time: `${year}-${month}-${date}`
                 },
-                columns: ['content']
+                columns: ['content','status']
             })
-            res[date] = queryRes.map((res)=>res.content);
+            res[date] = queryRes;
         }
-        return res
+        return res;
     }
     async getMonthList(year) {
         let res = []
@@ -40,7 +42,7 @@ class CalendarService extends Service {
                 where: {
                     time: `${year}-${month}`
                 },
-                columns: ['content']
+                columns: ['content','status']
             });
             res.push(queryRes.map(obj => obj.content));
         }
